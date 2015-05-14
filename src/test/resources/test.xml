@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+<!-- dbcp -->
+<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource">
+<property name="driverClassName">
+	<value>oracle.jdbc.driver.OracleDriver</value>
+</property>
+<property name="url">
+	<value>jdbc:oracle:thin:@127.0.0.1:1521:xe</value>
+</property>
+<property name="username">
+	<value>scott</value>
+</property>
+<property name="password">
+	<value>tiger</value>
+</property>
+<property name="maxActive">
+	<value>30</value>
+</property>
+</bean>
+<!-- mybatis  -->
+<bean id="sqlSessionFactory" 
+class="org.mybatis.spring.SqlSessionFactoryBean">
+	<property name="dataSource"  ref="dataSource"  />
+	<property name="configLocation" 
+	value="classpath:mybatis/config/SqlSessionConfig.xml"  />
+</bean>
+<bean id="sqlSessionTemplate" 
+class="org.mybatis.spring.SqlSessionTemplate">
+	<constructor-arg ref="sqlSessionFactory" />
+</bean>
+<bean id="viewResolver" 
+class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+<property name="prefix" value="/views/"></property>
+<property name="suffix" value=".jsp"></property>
+</bean>
+<bean id="memberDAO" class="org.iptime.danielhs.model.MemberDAO">
+<constructor-arg  ref="sqlSessionTemplate"/>
+</bean>
+<bean id="methodNameResolver" 
+ class="org.springframework.web.servlet.mvc.multiaction.ParameterMethodNameResolver">
+ 	<property name="paramName" value="command"></property>
+ </bean>
+ <bean id="/member.do" class="org.iptime.danielhs.controller.MemberController">
+ 	<constructor-arg ref="memberDAO"/>
+ 	<property name="methodNameResolver" ref="methodNameResolver"></property>
+ </bean>
+</beans>
+
+
+
+
+
+
+
+
+
+
+
+
+
